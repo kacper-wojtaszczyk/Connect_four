@@ -12,22 +12,27 @@ class Grid():
         self.game = game
         self.path = path.dirname(__file__)
         self.block_size = 100
+        self.circle_radius = 40
         self.game_over = False
 
     def draw_grid(self, display):
         for row in range(self.row):
             for column in range(self.cols):
                 self.rect = pygame.Rect(
-                    column*self.block_size, row*self.block_size, self.block_size, self.block_size)
-                if self.grid[row][column] == 0:
-                    pygame.draw.rect(display, (255, 255, 255), self.rect, 1)
+                    column*self.block_size, (row + 1)*self.block_size,  self.block_size, self.block_size)
+
+                pygame.draw.rect(display, (95, 164, 237), self.rect)
+                pygame.draw.rect(display, (0, 0, 0), self.rect, 1)
+                pygame.draw.circle(display, (77, 86, 94),
+                                   self.rect.center, self.circle_radius)
+                pygame.draw.circle(display, (0, 0, 0),
+                                   self.rect.center, self.circle_radius, 1)
                 if self.grid[row][column] == 1:
-                    pygame.draw.rect(display, (255, 0, 0), self.rect)
+                    pygame.draw.circle(display, (20, 200, 13),
+                                       (self.rect.center), self.circle_radius)
                 if self.grid[row][column] == 2:
-                    pygame.draw.rect(display, (0, 255, 0), self.rect)
-                    # self.coin = pygame.image.load(
-                    #     path.join(self.path, 'coin.png'))
-                    # display.blit(self.coin, self.rect.center)
+                    pygame.draw.circle(display, (186, 45, 10),
+                                       (self.rect.center), self.circle_radius)
 
     def open_spot(self, check_col):
         for x in range(self.row - 1, -1, -1):
