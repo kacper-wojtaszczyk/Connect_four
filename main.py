@@ -1,5 +1,6 @@
 import pygame
 import pygame.freetype
+import sys
 # import numpy as np
 # from os import path
 from grid import Grid
@@ -9,7 +10,7 @@ from agent import Agent
 class Game():
     def __init__(self):
         pygame.init()
-        self.game_display = pygame.display.set_mode((600, 800))
+        self.game_display = pygame.display.set_mode((700, 700))
         pygame.display.set_caption("Connect four")
         self.running = True
         self.clock = pygame.time.Clock()
@@ -19,8 +20,8 @@ class Game():
         self.turn = "AGENT"
         self.running = True
         while self.running:
-            self.grid = Grid(7, 6, self)
-            self.agent = Agent(self.grid)
+            self.grid = Grid(6, 7, self)
+            self.agent = Agent(self.grid, self)
             self.run()
             print("Game over\n")
             self.reset = input("Restart (y/n) ? :\n")
@@ -42,6 +43,8 @@ class Game():
             if event.type == pygame.QUIT and self.playing:
                 self.playing = False
                 self.running = False
+                pygame.quit()
+                sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN and self.playing:
                 self.click = True
 
@@ -51,6 +54,8 @@ class Game():
         if self.keys[pygame.K_ESCAPE] and self.playing:
             self.playing = False
             self.running = False
+            pygame.quit()
+            sys.exit()
 
     def update(self):
         if self.turn == "PLAYER":
@@ -65,7 +70,7 @@ class Game():
             self.turn = "PLAYER"
 
     def draw(self):
-        self.game_display.fill((0, 0, 0))
+        self.game_display.fill((77, 86, 94))
         self.grid.draw_grid(self.game_display)
         pygame.display.update()
 
