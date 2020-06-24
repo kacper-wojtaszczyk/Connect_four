@@ -2,10 +2,11 @@ import random
 
 
 class Agent():
-    def __init__(self, grid):
+    def __init__(self, grid, game):
         self.mark = 2
         self.color = (0, 255, 0)
         self.grid = grid
+        self.game = game
 
     def valid_moves(self):
         self.valid_moves_list = []
@@ -26,38 +27,7 @@ class Agent():
 
     def check_winning_move(self, column_to_check, piece):
         self.next = self.next_drop(self.grid.grid, column_to_check, piece)
-        print(self.next)
-        # Horizontal
-        for row in range(self.grid.row):
-            for column in range(self.grid.cols - 3):
-                self.window = list(self.next[row, column:column+4])
-                if self.window.count(piece) == 4:
-                    return True
-
-        # Vertical
-        for row in range(self.grid.row - 3):
-            for column in range(self.grid.cols):
-                self.window = list(self.next[row:row+4, column])
-                if self.window.count(piece) == 4:
-                    return True
-
-        # Positive diagonal
-        for row in range(self.grid.row - 3):
-            for column in range(self.grid.cols - 3):
-                self.window = list(self.next[range(
-                    row, row+4), range(column, column+4)])
-                if self.window.count(piece) == 4:
-                    return True
-
-        # Negative diagonal
-        for row in range(3, self.grid.row):
-            for column in range(self.grid.cols - 3):
-                self.window = list(self.next[range(
-                    row, row-4, -1), range(column, column + 4)])
-                if self.window.count(piece) == 4:
-                    return True
-
-        return False
+        return self.game.winning(self.next, piece)
 
     def next_move(self):
         self.moves = self.valid_moves()
