@@ -1,10 +1,10 @@
 import random
+import config
 
 
 class Agent():
     def __init__(self, grid, game):
-        self.mark = 2
-        self.color = (0, 255, 0)
+        self.mark = config.AI_mark
         self.grid = grid
         self.game = game
 
@@ -48,31 +48,31 @@ class Agent():
 
         # Horizontal
         for row in range(self.grid.row):
-            for column in range(self.grid.cols - 3):
-                self.window = list(grid[row:row + 4, column])
+            for column in range(self.grid.cols - (config.inarow - 1)):
+                self.window = list(grid[row:row + config.inarow, column])
                 if self.check_window(self.window, num_disc, piece):
                     self.num_windows += 1
 
         # Vertical
-        for row in range(self.grid.row - 3):
+        for row in range(self.grid.row - (config.inarow - 1)):
             for column in range(self.grid.cols):
-                self.window = list(grid[row:row + 4, column])
+                self.window = list(grid[row:row + config.inarow, column])
                 if self.check_window(self.window, num_disc, piece):
                     self.num_windows += 1
 
         # Poisitive diagonal
-        for row in range(self.grid.row - 3):
-            for column in range(self.grid.cols - 3):
+        for row in range(self.grid.row - (config.inarow - 1)):
+            for column in range(self.grid.cols - (config.inarow - 1)):
                 self.window = list(
-                    grid[range(row, row + 4), range(column, column + 4)])
+                    grid[range(row, row + config.inarow), range(column, column + config.inarow)])
                 if self.check_window(self.window, num_disc, piece):
                     self.num_windows += 1
 
         # Negative diagonal
         for row in range(3, self.grid.row):
-            for column in range(self.grid.cols - 3):
+            for column in range(self.grid.cols - (config.inarow - 1)):
                 self.window = list(
-                    grid[range(row, row - 4, -1), range(column, column + 4)])
+                    grid[range(row, row - config.inarow, -1), range(column, column + config.inarow)])
                 if self.check_window(self.window, num_disc, piece):
                     self.num_windows += 1
 
@@ -81,7 +81,7 @@ class Agent():
     def next_move(self):
         self.moves = self.valid_moves()
         self.scores = dict(
-            zip(self.moves, [self.score_move(column, 2) for column in self.moves]))
+            zip(self.moves, [self.score_move(column, self.mark) for column in self.moves]))
         self.max_cols = [key for key in self.scores.keys(
         ) if self.scores[key] == max(self.scores.values())]
 

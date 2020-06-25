@@ -1,6 +1,7 @@
 import numpy as np
 import pygame
 import math
+import config
 from os import path
 
 
@@ -11,8 +12,8 @@ class Grid():
         self.grid = np.zeros((self.row, self.cols), dtype=int)
         self.game = game
         self.path = path.dirname(__file__)
-        self.block_size = 100
-        self.circle_radius = 40
+        self.block_size = config.board_block_size
+        self.circle_radius = config.board_circle_radius
         self.game_over = False
 
     def draw_grid(self, display):
@@ -21,17 +22,17 @@ class Grid():
                 self.rect = pygame.Rect(
                     column*self.block_size, (row + 1)*self.block_size,  self.block_size, self.block_size)
 
-                pygame.draw.rect(display, (95, 164, 237), self.rect)
-                pygame.draw.rect(display, (0, 0, 0), self.rect, 1)
-                pygame.draw.circle(display, (77, 86, 94),
+                pygame.draw.rect(display, config.board_color, self.rect)
+                pygame.draw.rect(display, config.BLACK, self.rect, 1)
+                pygame.draw.circle(display, config.bg_color,
                                    self.rect.center, self.circle_radius)
-                pygame.draw.circle(display, (0, 0, 0),
+                pygame.draw.circle(display, config.BLACK,
                                    self.rect.center, self.circle_radius, 1)
                 if self.grid[row][column] == 1:
-                    pygame.draw.circle(display, (20, 200, 13),
+                    pygame.draw.circle(display, config.player_color,
                                        (self.rect.center), self.circle_radius)
                 if self.grid[row][column] == 2:
-                    pygame.draw.circle(display, (186, 45, 10),
+                    pygame.draw.circle(display, config.AI_color,
                                        (self.rect.center), self.circle_radius)
 
     def open_spot(self, check_col):
