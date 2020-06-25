@@ -45,17 +45,15 @@ class Grid():
         return int(math.floor(self.pos_x/self.block_size))
 
     def update(self, mark):
-        if self.game_over == False:
-            if mark == 1:
-                self.update_column = self.get_column()
-                self.update_row = self.open_spot(self.update_column)
-                if self.update_row != "XD":
-                    self.grid[self.update_row][self.update_column] = mark
-                elif self.update_row == "XD":
-                    return False
-            elif mark == 2:
+        if mark == 1:
+            self.update_column = self.get_column()
+            self.update_row = self.open_spot(self.update_column)
+            if self.update_row != "XD":
+                self.grid[self.update_row][self.update_column] = mark
+            elif self.update_row == "XD":
+                return False
+        elif mark == 2:
+            if self.game.agent.next_move():
                 self.update_column = self.game.agent.next_move()
                 self.update_row = self.open_spot(self.update_column)
                 self.grid[self.update_row][self.update_column] = mark
-        else:
-            return False
