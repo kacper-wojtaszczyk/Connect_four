@@ -15,16 +15,23 @@ class Game():
         self.running = True
         self.clock = pygame.time.Clock()
         self.click = False
+        self.player_win = False
 
     def new_game(self):
         while self.running:
             self.grid = Grid(config.rows, config.columns, self)
             self.agent = Agent(self.grid, self)
             self.run()
-            if self.restart():
-                self.running = True
+            if self.player_win:
+                if self.restart(config.player_mark):
+                    self.running = True
+                else:
+                    self.running = False
             else:
-                self.running = False
+                if self.restart(config.AI_mark):
+                    self.running = True
+                else:
+                    self.running = False
 
     def run(self):
         self.turn = config.AI_turn
@@ -35,7 +42,10 @@ class Game():
             self.events()
             self.update()
             self.draw()
-            if self.winning(self.grid.grid, config.player_mark) or self.winning(self.grid.grid, config.AI_mark):
+            if self.winning(self.grid.grid, config.player_mark):
+                self.player_win = True
+                self.playing = False
+            elif self.winning(self.grid.grid, config.AI_mark):
                 self.playing = False
 
     def events(self):
@@ -136,10 +146,14 @@ class Game():
             self.text_window.draw(self.game_display)
             pygame.display.update()
 
-    def restart(self):
+    def restart(self, winner):
         while True:
+            if winner == config.AI_mark:
+                self.text = config.AI_win_text
+            if winner == config.player_mark:
+                self.text = config.player_win_text
             self.text_window = TextWindow(config.text2_x, config.text2_y, config.text2_w,
-                                          config.text2_h, config.board_color, config.text2_text, config.text2_fontsize)
+                                          config.text2_h, config.board_color, self.text, config.text2_fontsize)
             self.button2 = Button(config.button2_x, config.button2_y, config.button2_w, config.button2_h,
                                   config.BLACK, config.button_color, config.button2_text, config.button2_fontsize)
             self.button3 = Button(config.button3_x, config.button3_y, config.button3_w, config.button3_h,
