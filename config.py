@@ -22,7 +22,6 @@ text2_w = 600
 text2_h = 50
 text2_x = display_w//2 - text1_w//2
 text2_y = 0
-text2_text = "Restart ?"
 text2_fontsize = 40
 button2_w = 100
 button2_h = 30
@@ -36,6 +35,8 @@ button3_x = display_w//2 + button3_w
 button3_y = 50
 button3_text = "NO"
 button3_fontsize = 20
+player_win_text = "You won! Do you want to restart?"
+AI_win_text = "AI won! Do you want to restart?"
 
 
 # Board
@@ -61,3 +62,13 @@ text1_color = (255, 0, 255)
 board_color = (95, 164, 237)
 player_color = (20, 200, 13)
 AI_color = (186, 45, 10)
+
+# Heuristic wages
+twos = 0.1
+twos_opp = -0.2
+threes = 1
+threes_opp = -1e2
+fours = 1e6
+
+# Minmax
+minimax_steps = 3
