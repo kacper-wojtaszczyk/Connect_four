@@ -57,4 +57,7 @@ class Grid():
         elif mark == config.AI_mark:
             self.update_column = self.game.agent.next_move()
             self.update_row = self.open_spot(self.update_column)
-            self.grid[self.update_row][self.update_column] = mark
+            if self.update_row != "XD":
+                self.grid[self.update_row][self.update_column] = mark
+            elif self.update_row == "XD":
+                self.game.turn += 1
