@@ -43,18 +43,18 @@ class Grid():
 
     def get_column(self):
         self.pos_x = self.game.mouse_pos[0]
-        return int(math.floor(self.pos_x/self.block_size))
+        return int(math.floor(self.pos_x//self.block_size))
 
     def update(self, mark):
-        if mark == 1:
+        if mark == config.player_mark:
             self.update_column = self.get_column()
             self.update_row = self.open_spot(self.update_column)
             if self.update_row != "XD":
                 self.grid[self.update_row][self.update_column] = mark
             elif self.update_row == "XD":
-                return False
-        elif mark == 2:
-            if self.game.agent.next_move():
-                self.update_column = self.game.agent.next_move()
-                self.update_row = self.open_spot(self.update_column)
-                self.grid[self.update_row][self.update_column] = mark
+                self.game.turn += 1
+                return self.game.turn
+        elif mark == config.AI_mark:
+            self.update_column = self.game.agent.next_move()
+            self.update_row = self.open_spot(self.update_column)
+            self.grid[self.update_row][self.update_column] = mark
