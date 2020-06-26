@@ -1,5 +1,4 @@
 import pygame
-import pygame.freetype
 import sys
 import config
 from board import Grid
@@ -14,7 +13,8 @@ class Game():
             (config.display_w, config.display_h))
         pygame.display.set_caption(config.caption)
         self.running = True
-        # self.clock = pygame.time.Clock()
+        self.clock = pygame.time.Clock()
+        self.click = False
 
     def new_game(self):
         while self.running:
@@ -25,18 +25,14 @@ class Game():
                 self.running = True
             else:
                 self.running = False
-            # self.reset = input("Restart (y/n) ? :\n")
-            # if self.reset == "n":
-            #     self.running = False
 
     def run(self):
-        self.turn = "AGENT"
+        self.turn = config.AI_turn
         self.playing = True
         while self.playing:
             self.check_filled()
-            # self.clock.tick(30)
+            self.clock.tick(60)
             self.events()
-            pygame.time.wait(50)
             self.update()
             self.draw()
             if self.winning(self.grid.grid, config.player_mark) or self.winning(self.grid.grid, config.AI_mark):
@@ -53,8 +49,8 @@ class Game():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.click = True
 
-        self.keys = pygame.key.get_pressed()
         self.mouse_pos = pygame.mouse.get_pos()
+        self.keys = pygame.key.get_pressed()
 
         if self.keys[pygame.K_ESCAPE]:
             self.playing = False
@@ -63,20 +59,15 @@ class Game():
             sys.exit()
 
     def update(self):
-        if self.turn == "AGENT":
+        if self.turn == config.AI_turn:
             self.grid.update(config.AI_mark)
-            self.turn = "PLAYER"
-            pygame.time.wait(100)
-        elif self.turn == "PLAYER":
+            self.turn += 1
+            self.turn = self.turn % 2
+        elif self.turn == config.player_turn:
             if self.click:
                 self.grid.update(config.player_mark)
-                pygame.time.wait(100)
-                self.turn = "AGENT"
-                self.click = False
-
-        # elif self.turn == "AGENT":
-        #     self.grid.update(2)
-        #     self.turn = "PLAYER"
+                self.turn += 1
+                self.turn = self.turn % 2
 
     def draw(self):
         self.game_display.fill(config.bg_color)
@@ -128,17 +119,19 @@ class Game():
 
     def start_screen(self):
         self.button1 = Button(config.button1_x, config.button1_y, config.button1_w, config.button1_h,
-                              config.WHITE, config.button_color, config.button1_text, config.button1_fontsize)
+                              config.BLACK, config.button_color, config.button1_text, config.button1_fontsize)
         self.text_window = TextWindow(config.text1_x, config.text1_y, config.text1_w, config.text1_h,
-                                      config.text1_color, config.text1_text, config.text1_fontsize)
+                                      config.board_color, config.text1_text, config.text1_fontsize)
         self.player_choose = False
         while not self.player_choose:
             self.events()
-            if self.click:
-                if self.mouse_pos[0] in range(config.button1_x, config.button1_x + config.button1_w) and self.mouse_pos[1] in range(config.button1_y, config.button1_y + config.button1_h):
+            if self.mouse_pos[0] in range(config.button1_x, config.button1_x + config.button1_w) and self.mouse_pos[1] in range(config.button1_y, config.button1_y + config.button1_h):
+                self.button1.background_color = config.button_effect_color
+                if self.click:
                     self.player_choose = True
-                # self.click = False
-            self.game_display.fill(config.BLACK)
+            else:
+                self.button1.background_color = config.button_color
+            self.game_display.fill(config.bg_color)
             self.button1.draw(self.game_display)
             self.text_window.draw(self.game_display)
             pygame.display.update()
@@ -146,20 +139,26 @@ class Game():
     def restart(self):
         while True:
             self.text_window = TextWindow(config.text2_x, config.text2_y, config.text2_w,
-                                          config.text2_h, config.WHITE, config.text2_text, config.text2_fontsize)
-            self.button1 = Button(config.button2_x, config.button2_y, config.button2_w, config.button2_h,
-                                  config.WHITE, config.button_color, config.button2_text, config.button2_fontsize)
-            self.button2 = Button(config.button3_x, config.button3_y, config.button3_w, config.button3_h,
-                                  config.WHITE, config.button_color, config.button3_text, config.button3_fontsize)
+                                          config.text2_h, config.board_color, config.text2_text, config.text2_fontsize)
+            self.button2 = Button(config.button2_x, config.button2_y, config.button2_w, config.button2_h,
+                                  config.BLACK, config.button_color, config.button2_text, config.button2_fontsize)
+            self.button3 = Button(config.button3_x, config.button3_y, config.button3_w, config.button3_h,
+                                  config.BLACK, config.button_color, config.button3_text, config.button3_fontsize)
             self.events()
-            if self.click:
-                if self.mouse_pos[0] in range(config.button2_x, config.button2_x + config.button2_w) and self.mouse_pos[1] in range(config.button2_y, config.button2_y + config.button2_h):
+            if self.mouse_pos[0] in range(config.button2_x, config.button2_x + config.button2_w) and self.mouse_pos[1] in range(config.button2_y, config.button2_y + config.button2_h):
+                self.button2.background_color = config.button_effect_color
+                if self.click:
                     return True
-                elif self.mouse_pos[0] in range(config.button3_x, config.button3_x + config.button3_w) and self.mouse_pos[1] in range(config.button3_y, config.button3_y + config.button3_h):
+            elif self.mouse_pos[0] in range(config.button3_x, config.button3_x + config.button3_w) and self.mouse_pos[1] in range(config.button3_y, config.button3_y + config.button3_h):
+                self.button3.background_color = config.button_effect_color
+                if self.click:
                     return False
+            else:
+                self.button2.background_color = config.button_color
+                self.button3.background_color = config.button_color
             self.text_window.draw(self.game_display)
-            self.button1.draw(self.game_display)
             self.button2.draw(self.game_display)
+            self.button3.draw(self.game_display)
             pygame.display.flip()
 
     def game_over(self):

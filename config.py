@@ -21,19 +21,19 @@ text1_fontsize = 80
 text2_w = 600
 text2_h = 50
 text2_x = display_w//2 - text1_w//2
-text2_y = 10
+text2_y = 0
 text2_text = "Restart ?"
 text2_fontsize = 40
 button2_w = 100
 button2_h = 30
 button2_x = display_w//2 - button2_w*2
-button2_y = 70
+button2_y = 50
 button2_text = "YES"
 button2_fontsize = 20
 button3_w = 100
 button3_h = 30
 button3_x = display_w//2 + button3_w
-button3_y = 70
+button3_y = 50
 button3_text = "NO"
 button3_fontsize = 20
 
@@ -48,12 +48,15 @@ board_circle_radius = 40
 # Marks
 player_mark = 1
 AI_mark = 2
+player_turn = 1
+AI_turn = 0
 
 # Colors
 bg_color = (77, 86, 94)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-button_color = (200, 200, 255)
+button_color = (200, 100, 100)
+button_effect_color = (255, 100, 100)
 text1_color = (255, 0, 255)
 board_color = (95, 164, 237)
 player_color = (20, 200, 13)

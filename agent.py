@@ -93,5 +93,4 @@ class Agent():
         #         if self.check_winning_move(move, self.mark):
         #             return move
         #     return random.choice(self.moves)
-        # else:
-        #     self.grid.game_over = True
+
