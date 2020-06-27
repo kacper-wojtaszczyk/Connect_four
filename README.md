@@ -1,7 +1,19 @@
 # Connect four
-Four in a row game with pygame (Still in progress)
+Four in a row game with pygame.
 
-Heading for :
-* Upgrading AI
-* Better GUI
-* Machine learning implementation on AI
+## Heading for :
+* Upgrading AI ( done )
+* Better GUI ( lets say its also done )
+* Machine learning implementation on AI ( in progress )
+* Algorithms optimalization ( in progress )
+* Make it executable ( in progress )
+
+## Features : 
+* 4 difficulty mode for AI using heuristic, and minimax algorithms 
+* Object oriented
+
+## License :
+MIT
+
+## Author:
+Krystian Plich
