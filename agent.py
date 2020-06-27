@@ -31,9 +31,12 @@ class Agent():
         self.next = self.next_drop(self.grid.grid, column_to_check, piece)
         return self.game.winning(self.next, piece)
 
-    def score_move(self, column_to_check, piece):
+    def score_move(self, column_to_check, piece, difficulty):
         self.next = self.next_drop(self.grid.grid, column_to_check, piece)
-        return self.minimax(self.next, self.n_steps - 1, False, piece)
+        if difficulty == 2:
+            return self.get_heuristic(self.next, piece)
+        elif difficulty == 3:
+            return self.minimax(self.next, self.n_steps - 1, False, piece)
 
     def is_terminal_window(self, window):
         return window.count(config.player_mark) == config.inarow or window.count(config.AI_mark) == config.inarow
@@ -94,10 +97,10 @@ class Agent():
             return self.value
 
     def get_heuristic(self, grid, piece):
-        #self.twos = self.count_windows(grid, 2, piece)
+        # self.twos = self.count_windows(grid, 2, piece)
         self.threes = self.count_windows(grid, 3, piece)
         self.fours = self.count_windows(grid, 4, piece)
-        #self.twos_opposite = self.count_windows(grid, 2, piece - 1)
+        # self.twos_opposite = self.count_windows(grid, 2, piece - 1)
         self.threes_opposite = self.count_windows(grid, 3, piece - 1)
         self.score = config.fours*self.fours + config.threes * \
             self.threes + config.threes_opp*self.threes_opposite
@@ -143,16 +146,16 @@ class Agent():
 
     def next_move(self):
         self.moves = self.valid_moves(self.grid.grid)
-        self.scores = dict(
-            zip(self.moves, [self.score_move(column, self.mark) for column in self.moves]))
-        self.max_cols = [key for key in self.scores.keys(
-        ) if self.scores[key] == max(self.scores.values())]
-
-        return random.choice(self.max_cols)
-        # if len(self.moves) != 0:
-        #     for move in self.moves:
-        #         if self.check_winning_move(move, 1):
-        #             return move
-        #         if self.check_winning_move(move, self.mark):
-        #             return move
-        #     return random.choice(self.moves)
+        if self.game.difficulty == 1:
+            # for move in self.moves:
+            #     if self.check_winning_move(move, config.player_mark):
+            #         return move
+            #     if self.check_winning_move(move, self.mark):
+            #         return move
+            return random.choice(self.moves)
+        if self.game.difficulty == 2 or self.game.difficulty == 3:
+            self.scores = dict(
+                zip(self.moves, [self.score_move(column, self.mark, self.game.difficulty) for column in self.moves]))
+            self.max_cols = [key for key in self.scores.keys(
+            ) if self.scores[key] == max(self.scores.values())]
+            return random.choice(self.max_cols)
