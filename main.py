@@ -1,9 +1,9 @@
 import pygame
 import sys
 import config
+import gui
 from board import Grid
 from agent import Agent
-from gui import Button, TextWindow
 
 
 class Game():
@@ -16,22 +16,18 @@ class Game():
         self.clock = pygame.time.Clock()
         self.click = False
         self.player_win = False
+        self.difficulty = False
+        self.choose = None
 
     def new_game(self):
         while self.running:
             self.grid = Grid(config.rows, config.columns, self)
             self.agent = Agent(self.grid, self)
             self.run()
-            if self.player_win:
-                if self.restart(config.player_mark):
-                    self.running = True
-                else:
-                    self.running = False
+            if self.restart():
+                self.running = True
             else:
-                if self.restart(config.AI_mark):
-                    self.running = True
-                else:
-                    self.running = False
+                self.running = False
 
     def run(self):
         self.turn = config.AI_turn
@@ -128,59 +124,42 @@ class Game():
         return False
 
     def start_screen(self):
-        self.button1 = Button(config.button1_x, config.button1_y, config.button1_w, config.button1_h,
-                              config.BLACK, config.button_color, config.button1_text, config.button1_fontsize)
-        self.text_window = TextWindow(config.text1_x, config.text1_y, config.text1_w, config.text1_h,
-                                      config.board_color, config.text1_text, config.text1_fontsize)
-        self.player_choose = False
-        while not self.player_choose:
+        self.start = False
+        while not self.start:
             self.events()
-            if self.mouse_pos[0] in range(config.button1_x, config.button1_x + config.button1_w) and self.mouse_pos[1] in range(config.button1_y, config.button1_y + config.button1_h):
-                self.button1.background_color = config.button_effect_color
-                if self.click:
-                    self.player_choose = True
-            else:
-                self.button1.background_color = config.button_color
-            self.game_display.fill(config.bg_color)
-            self.button1.draw(self.game_display)
-            self.text_window.draw(self.game_display)
-            pygame.display.update()
+            self.start = gui.start_screen(
+                self.mouse_pos, self.click, self.game_display)
 
-    def restart(self, winner):
-        while True:
-            if winner == config.AI_mark:
-                self.text = config.AI_win_text
-            if winner == config.player_mark:
-                self.text = config.player_win_text
-            self.text_window = TextWindow(config.text2_x, config.text2_y, config.text2_w,
-                                          config.text2_h, config.board_color, self.text, config.text2_fontsize)
-            self.button2 = Button(config.button2_x, config.button2_y, config.button2_w, config.button2_h,
-                                  config.BLACK, config.button_color, config.button2_text, config.button2_fontsize)
-            self.button3 = Button(config.button3_x, config.button3_y, config.button3_w, config.button3_h,
-                                  config.BLACK, config.button_color, config.button3_text, config.button3_fontsize)
+    def restart(self):
+        self.reset = False
+        if self.player_win:
+            self.winner = config.player_mark
+        else:
+            self.winner = config.AI_mark
+        while not self.reset:
             self.events()
-            if self.mouse_pos[0] in range(config.button2_x, config.button2_x + config.button2_w) and self.mouse_pos[1] in range(config.button2_y, config.button2_y + config.button2_h):
-                self.button2.background_color = config.button_effect_color
-                if self.click:
-                    return True
-            elif self.mouse_pos[0] in range(config.button3_x, config.button3_x + config.button3_w) and self.mouse_pos[1] in range(config.button3_y, config.button3_y + config.button3_h):
-                self.button3.background_color = config.button_effect_color
-                if self.click:
-                    return False
+            self.choose = gui.restart_screen(
+                self.mouse_pos, self.click, self.game_display, self.winner)
+            if self.choose:
+                return self.choose
+            elif self.choose == False:
+                return self.choose
             else:
-                self.button2.background_color = config.button_color
-                self.button3.background_color = config.button_color
-            self.text_window.draw(self.game_display)
-            self.button2.draw(self.game_display)
-            self.button3.draw(self.game_display)
-            pygame.display.flip()
+                pass
 
     def game_over(self):
         pass
 
+    def difficulty_screen(self):
+        while not self.difficulty:
+            self.events()
+            self. difficulty = gui.difficulty_screen(
+                self.mouse_pos, self.click, self.game_display)
+
 
 game = Game()
 game.start_screen()
+game.difficulty_screen()
 while game.running:
     game.new_game()
     game.game_over()
